@@ -1,0 +1,55 @@
+version: 1
+
+language: ko
+
+review:
+  tone: direct
+  style: concise
+  explain_with_examples: false
+  summarize_at_end: true
+  prefer_markdown: true
+
+analysis:
+  depth: fast
+  check_performance: false
+  check_security: true
+  check_maintainability: false
+
+comments:
+  language: ko
+  include_summary: true
+  inline_suggestions: true
+  emoji_style: minimal
+  max_comment_length: 400
+
+exclude:
+  - "node_modules/"
+  - "build/"
+  - "dist/"
+  - "*.lock"
+
+rules:
+  - name: "빠른 개발 우선"
+    description: "완벽함보단 실행 가능한 코드를 목표로 합니다."
+  - name: "명확한 네이밍"
+    description: "짧고 직관적인 함수/변수명을 사용하세요."
+  - name: "협업 가독성"
+    description: "팀원이 즉시 이해할 수 있는 주석과 로직 구조를 유지합니다."
+  - name: "간단한 테스트"
+    description: "핵심 기능 위주로 테스트 작성 (전체 커버리지보단 기능 안정성 우선)."
+
+commit_summary:
+  include_changed_files: true
+  include_stats: true
+  summarize_in_korean: true
+  max_lines: 6
+
+example_feedback:
+  - "⚡ 이 부분은 하드코딩 대신 환경 변수로 처리해보세요."
+  - "🧩 함수가 길어요. 핵심 로직만 분리해도 좋습니다."
+  - "✅ 지금 구조로도 충분히 동작 가능해 보입니다!"
+
+team:
+  prioritize_speed: true
+  minimize_blockers: true
+  allow_experimental_code: true 
