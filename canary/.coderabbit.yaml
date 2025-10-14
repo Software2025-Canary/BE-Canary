@@ -52,4 +52,4 @@ example_feedback:
 team:
   prioritize_speed: true
   minimize_blockers: true
-  allow_experimental_code: true 
+  allow_experimental_code: true
