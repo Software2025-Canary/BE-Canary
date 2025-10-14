@@ -20,7 +20,8 @@ Software FUTURE&amp;DREAM Challenge 2025 대회 출품작 Canary 서버입니다
   - **style**: 코드 스타일 변경 (세미콜론, 공백 등)  
   - **refactor**: 코드 리팩토링 (기능 변경 없음)  
   - **test**: 테스트 코드 추가/수정  
-  - **chore**: 빌드, 패키지, 환경설정 변경  
+  - **chore**: 빌드, 패키지, 환경설정 변경
+  - **init**: 초기 파일 구조 생성
 
 ## 4. Pull Request(PR)
 - main 브랜치 머지 전, 반드시 **PR**을 올립니다.
