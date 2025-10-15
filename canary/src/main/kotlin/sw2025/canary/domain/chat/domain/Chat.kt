@@ -9,13 +9,12 @@ import sw2025.canary.domain.bot.domain.Bot
 import sw2025.canary.domain.user.domain.User
 
 @Entity
-class Chat (
+class Chat(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
     @ManyToOne
     val user: User,
     @ManyToOne
-    val bot: Bot
-
-    )
+    val bot: Bot,
+)

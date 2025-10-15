@@ -1,4 +1,4 @@
-package sw2025.canary.domain.lexical_correction.domain
+package sw2025.canary.domain.lexicalcorrection.domain
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

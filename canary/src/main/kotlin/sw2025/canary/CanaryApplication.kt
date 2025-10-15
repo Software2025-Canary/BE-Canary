@@ -9,5 +9,5 @@ import org.springframework.boot.runApplication
 class CanaryApplication
 
 fun main(args: Array<String>) {
-	runApplication<CanaryApplication>(*args)
+    runApplication<CanaryApplication>(*args)
 }

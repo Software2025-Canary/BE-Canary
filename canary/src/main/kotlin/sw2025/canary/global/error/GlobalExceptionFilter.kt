@@ -9,12 +9,12 @@ import sw2025.canary.global.error.exception.CanaryException
 import java.io.IOException
 
 class GlobalExceptionFilter(
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         try {
             filterChain.doFilter(request, response)
@@ -29,8 +29,7 @@ class GlobalExceptionFilter(
     private fun writeErrorResponse(
         response: HttpServletResponse,
         status: Int,
-        errorResponse:
-        ErrorResponse
+        errorResponse: ErrorResponse,
     ) {
         response.status = status
         response.contentType = "application/json"

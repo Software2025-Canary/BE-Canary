@@ -1,6 +1,6 @@
-package sw2025.canary.domain.lexical_correction.persistence.repository
+package sw2025.canary.domain.lexicalcorrection.persistence.repository
 
 import org.springframework.data.repository.CrudRepository
-import sw2025.canary.domain.lexical_correction.domain.CorrectionItem
+import sw2025.canary.domain.lexicalcorrection.domain.CorrectionItem
 
 interface CorrectionItemRepository : CrudRepository<CorrectionItem, Long>

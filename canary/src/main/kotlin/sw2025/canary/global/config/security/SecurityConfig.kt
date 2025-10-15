@@ -11,17 +11,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsUtils
 import sw2025.canary.global.error.GlobalExceptionFilter
-import sw2025.canary.global.security.jwt.JwtProvider
 import sw2025.canary.global.security.jwt.JwtFilter
+import sw2025.canary.global.security.jwt.JwtProvider
 
 @Component
 open class SecurityConfig(
     private val objectMapper: ObjectMapper,
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
 ) {
     @Bean
     protected fun filterChain(http: HttpSecurity): SecurityFilterChain {
-
         http
             .cors(Customizer.withDefaults())
             .csrf { it.disable() }
@@ -30,7 +29,8 @@ open class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers(CorsUtils::isCorsRequest).permitAll()
+                    .requestMatchers(CorsUtils::isCorsRequest)
+                    .permitAll()
                     .requestMatchers(
                         "/swagger-ui/index.html",
                         "/v2/api-docs",
@@ -47,7 +47,8 @@ open class SecurityConfig(
                     .requestMatchers(
                         "/user",
                     ).permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest()
+                    .authenticated()
             }
 
         http

@@ -14,15 +14,14 @@ import sw2025.canary.global.security.jwt.exception.ExpiredTokenException
 import sw2025.canary.global.security.jwt.exception.InvalidJwtException
 import sw2025.canary.global.security.refresh.RefreshToken
 import sw2025.canary.global.security.refresh.repository.RefreshTokenRepository
-import java.util.*
+import java.util.Date
 import javax.crypto.SecretKey
-
 
 @Component
 class JwtProvider(
     private val jwtProperties: JwtProperties,
     private val authDetailsService: AuthDetailsService,
-    private val refreshTokenRepository: RefreshTokenRepository
+    private val refreshTokenRepository: RefreshTokenRepository,
 ) {
     private val secretKey: SecretKey = Keys.hmacShaKeyFor(jwtProperties.secretKey.toByteArray())
 
@@ -33,9 +32,9 @@ class JwtProvider(
 
     fun generateToken(userId: Long): TokenResponse {
         val accessToken = generateAccessToken(userId.toString(), ACCESS_KEY, jwtProperties.accessExp)
-        val refreshToken = generateRefreshToken( REFRESH_KEY, jwtProperties.refreshExp)
+        val refreshToken = generateRefreshToken(REFRESH_KEY, jwtProperties.refreshExp)
         refreshTokenRepository.save(
-            RefreshToken(userId, refreshToken, jwtProperties.refreshExp)
+            RefreshToken(userId, refreshToken, jwtProperties.refreshExp),
         )
         return TokenResponse(accessToken, refreshToken)
     }
@@ -45,7 +44,8 @@ class JwtProvider(
             throw InvalidJwtException
         }
 
-        refreshTokenRepository.findByToken(refreshToken)
+        refreshTokenRepository
+            .findByToken(refreshToken)
             ?.let { token ->
                 val id = token.id
 
@@ -55,12 +55,15 @@ class JwtProvider(
             } ?: throw InvalidJwtException
     }
 
-    private fun isRefreshToken(token: String?): Boolean {
-        return REFRESH_KEY == getJws(token!!).get("type", String::class.java)
-    }
+    private fun isRefreshToken(token: String?): Boolean = REFRESH_KEY == getJws(token!!).get("type", String::class.java)
 
-    private fun generateAccessToken(id: String, type: String, exp: Long): String =
-        Jwts.builder()
+    private fun generateAccessToken(
+        id: String,
+        type: String,
+        exp: Long,
+    ): String =
+        Jwts
+            .builder()
             .subject(id)
             .claim("type", type)
             .signWith(secretKey)
@@ -68,8 +71,12 @@ class JwtProvider(
             .expiration(Date(System.currentTimeMillis() + exp * 1000))
             .compact()
 
-    private fun generateRefreshToken(type: String, exp: Long): String =
-        Jwts.builder()
+    private fun generateRefreshToken(
+        type: String,
+        exp: Long,
+    ): String =
+        Jwts
+            .builder()
             .claim("type", type)
             .signWith(secretKey)
             .issuedAt(Date()) // 발행 시간 설정
@@ -88,9 +95,10 @@ class JwtProvider(
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
-    private fun getJws(token: String): Claims {
-        return try {
-            Jwts.parser()
+    private fun getJws(token: String): Claims =
+        try {
+            Jwts
+                .parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
@@ -100,9 +108,6 @@ class JwtProvider(
         } catch (e: Exception) {
             throw InvalidJwtException
         }
-    }
 
-    private fun getDetails(body: Claims): UserDetails {
-        return authDetailsService.loadUserByUsername(body.subject)
-    }
+    private fun getDetails(body: Claims): UserDetails = authDetailsService.loadUserByUsername(body.subject)
 }

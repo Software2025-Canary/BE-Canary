@@ -1,11 +1,11 @@
-package sw2025.canary.domain.lexical_correction.domain
+package sw2025.canary.domain.lexicalcorrection.domain
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
-import sw2025.canary.domain.lexical_correction.enum.CorrectionType
+import sw2025.canary.domain.lexicalcorrection.enum.CorrectionType
 
 @Entity
 class CorrectionItem(

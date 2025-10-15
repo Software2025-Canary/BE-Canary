@@ -1,4 +1,4 @@
-package sw2025.canary.domain.lexical_correction.enum
+package sw2025.canary.domain.lexicalcorrection.enum
 
 enum class CorrectionType {
     SPELLING,

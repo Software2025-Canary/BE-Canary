@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToOne
 
 @Entity
-class ChatReport (
+class ChatReport(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
