@@ -4,7 +4,6 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import sw2025.canary.domain.user.facade.UserFacade
-import sw2025.canary.domain.user.persistence.repository.UserRepository
 
 @Component
 class AuthDetailsService(
