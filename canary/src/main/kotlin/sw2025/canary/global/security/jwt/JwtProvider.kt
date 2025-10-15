@@ -1,6 +1,8 @@
 package sw2025.canary.global.security.jwt
 
-import io.jsonwebtoken.*
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -13,6 +15,8 @@ import sw2025.canary.global.security.jwt.exception.InvalidJwtException
 import sw2025.canary.global.security.refresh.RefreshToken
 import sw2025.canary.global.security.refresh.repository.RefreshTokenRepository
 import java.util.*
+import javax.crypto.SecretKey
+
 
 @Component
 class JwtProvider(
@@ -20,13 +24,15 @@ class JwtProvider(
     private val authDetailsService: AuthDetailsService,
     private val refreshTokenRepository: RefreshTokenRepository
 ) {
+    private val secretKey: SecretKey = Keys.hmacShaKeyFor(jwtProperties.secretKey.toByteArray())
+
     companion object {
         private const val ACCESS_KEY = "access_token"
         private const val REFRESH_KEY = "refresh_token"
     }
 
-    fun generateToken(userId: String): TokenResponse {
-        val accessToken = generateAccessToken(userId, ACCESS_KEY, jwtProperties.accessExp)
+    fun generateToken(userId: Long): TokenResponse {
+        val accessToken = generateAccessToken(userId.toString(), ACCESS_KEY, jwtProperties.accessExp)
         val refreshToken = generateRefreshToken( REFRESH_KEY, jwtProperties.refreshExp)
         refreshTokenRepository.save(
             RefreshToken(userId, refreshToken, jwtProperties.refreshExp)
@@ -50,49 +56,45 @@ class JwtProvider(
     }
 
     private fun isRefreshToken(token: String?): Boolean {
-        return REFRESH_KEY == getJws(token!!).header["typ"].toString()
+        return REFRESH_KEY == getJws(token!!).get("type", String::class.java)
     }
 
     private fun generateAccessToken(id: String, type: String, exp: Long): String =
         Jwts.builder()
-            .setSubject(id)
-            .setHeaderParam("typ", type)
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secretKey)
-            .setExpiration(Date(System.currentTimeMillis() + exp * 1000))
-            .setIssuedAt(Date())
+            .subject(id)
+            .claim("type", type)
+            .signWith(secretKey)
+            .issuedAt(Date()) // 발행 시간 설정
+            .expiration(Date(System.currentTimeMillis() + exp * 1000))
             .compact()
 
     private fun generateRefreshToken(type: String, exp: Long): String =
         Jwts.builder()
-            .setHeaderParam("typ", type)
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secretKey)
-            .setExpiration(Date(System.currentTimeMillis() + exp * 1000))
-            .setIssuedAt(Date())
+            .claim("type", type)
+            .signWith(secretKey)
+            .issuedAt(Date()) // 발행 시간 설정
+            .expiration(Date(System.currentTimeMillis() + exp * 1000))
             .compact()
 
     fun resolveToken(request: HttpServletRequest): String? =
         request.getHeader(jwtProperties.header)?.also {
             if (it.startsWith(jwtProperties.prefix)) {
-                return it.substring(jwtProperties.prefix.length)
+                return it.substring(jwtProperties.prefix.length).trim()
             }
         }
 
     fun authentication(token: String): Authentication? {
-        val body: Claims = getJws(token).body
-        val userDetails: UserDetails = getDetails(body)
+        val userDetails: UserDetails = getDetails(getJws(token))
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
-    fun getClaimsToken(token: String): Claims {
-        return Jwts.parser()
-            .setSigningKey(jwtProperties.secretKey)
-            .parseClaimsJws(token)
-            .body
-    }
-
-    private fun getJws(token: String): Jws<Claims> {
+    private fun getJws(token: String): Claims {
         return try {
-            Jwts.parser().setSigningKey(jwtProperties.secretKey).parseClaimsJws(token)
+            Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .payload
         } catch (e: ExpiredTokenException) {
             throw ExpiredTokenException
         } catch (e: Exception) {
