@@ -42,15 +42,12 @@ class JwtProvider(
         refreshTokenRepository.findByToken(refreshToken)
             ?.let { token ->
                 val id = token.id
-                val role = getRole(token.token)
 
-                val tokenResponse = generateToken(id, role)
+                val tokenResponse = generateToken(id)
                 token.update(tokenResponse.refreshToken, jwtProperties.refreshExp)
                 return TokenResponse(tokenResponse.accessToken, tokenResponse.refreshToken)
             } ?: throw InvalidJwtException
     }
-
-    fun getRole(token: String) = getJws(token).body["role"].toString()
 
     private fun isRefreshToken(token: String?): Boolean {
         return REFRESH_KEY == getJws(token!!).header["typ"].toString()
