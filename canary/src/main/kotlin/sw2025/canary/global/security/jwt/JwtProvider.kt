@@ -25,7 +25,7 @@ class JwtProvider(
         private const val REFRESH_KEY = "refresh_token"
     }
 
-    fun generateToken(userId: String, role: String): TokenResponse {
+    fun generateToken(userId: String): TokenResponse {
         val accessToken = generateAccessToken(userId, ACCESS_KEY, jwtProperties.accessExp)
         val refreshToken = generateRefreshToken( REFRESH_KEY, jwtProperties.refreshExp)
         refreshTokenRepository.save(
