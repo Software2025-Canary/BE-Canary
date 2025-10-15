@@ -6,10 +6,10 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 
 @Entity
-class User (
+class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
     val name: String,
-    val profile: String
+    val profile: String,
 )

@@ -1,6 +1,6 @@
 package sw2025.canary.global.error
 
-data class ErrorResponse (
+data class ErrorResponse(
     val status: Int,
-    val message: String?
+    val message: String?,
 )

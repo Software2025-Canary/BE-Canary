@@ -8,12 +8,12 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToOne
 
 @Entity
-class UserReport (
+class UserReport(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
     @OneToOne
     val user: User,
     @Column(columnDefinition = "json")
-    val report: String
+    val report: String,
 )
