@@ -3,13 +3,15 @@ package sw2025.canary.global.security.auth
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
+import sw2025.canary.domain.user.facade.UserFacade
+import sw2025.canary.domain.user.persistence.repository.UserRepository
 
 @Component
 class AuthDetailsService(
-    private val userFacadeUseCase: UserFacadeUseCase
+    private val userFacade: UserFacade,
 ) : UserDetailsService {
-    override fun loadUserByUsername(accountId: String): UserDetails {
-        val user = userFacadeUseCase.getUserByAccountId(accountId)
-        return AuthDetails(user.id)
+    override fun loadUserByUsername(id: String): UserDetails {
+        val user = userFacade.findUserByIdOrThrow(id.toLong())
+        return AuthDetails(user.id.toString())
     }
 }
