@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import sw2025.canary.domain.user.domain.User
 
 @Entity
-class LexicalCorrection (
+class LexicalCorrection(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,

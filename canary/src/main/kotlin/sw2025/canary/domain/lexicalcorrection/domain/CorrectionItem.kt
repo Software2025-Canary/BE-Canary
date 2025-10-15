@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import sw2025.canary.domain.lexical_correction.enum.CorrectionType
 
 @Entity
-class CorrectionItem (
+class CorrectionItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
