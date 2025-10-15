@@ -52,7 +52,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6") // JSON 직렬화
 
-    implementation("io.netty:netty-all:4.1.108.Final")
+
 }
 
 kotlin {
@@ -69,4 +69,14 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+// Suppress JDK 22+ native-access warnings for libraries (e.g., Netty) during dev runs
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+}
+
+// Ensure Spring Boot's bootRun also gets the flag
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
 }
