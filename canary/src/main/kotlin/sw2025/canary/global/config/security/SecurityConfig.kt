@@ -8,12 +8,14 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsUtils
 import sw2025.canary.global.error.GlobalExceptionFilter
 import sw2025.canary.global.security.jwt.JwtProvider
 import sw2025.canary.global.security.jwt.JwtFilter
 
-class SecurityConfig(
+@Component
+open class SecurityConfig(
     private val objectMapper: ObjectMapper,
     private val jwtProvider: JwtProvider
 ) {
@@ -41,6 +43,9 @@ class SecurityConfig(
                         "/swagger-ui/**",
                         "/webjars/**",
                         "/swagger-ui.html",
+                    ).permitAll()
+                    .requestMatchers(
+                        "/user",
                     ).permitAll()
                     .anyRequest().authenticated()
             }
