@@ -12,7 +12,7 @@ class Situation(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
-    @ManyToOne(cascade = [(CascadeType.REMOVE)])
+    @ManyToOne
     val bot: Bot,
     val situation: String,
     val prompt: String,
